@@ -1,26 +1,27 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <router-view></router-view>
+  <FooterPlay />
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import FooterPlay from './components/FooterPlay'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    FooterPlay
   }
 }
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.icon{
+  width: .5rem;
+  height: .5rem;
 }
 </style>
