@@ -12,6 +12,11 @@ const routes = [
     name: 'SongList',
     component: ()=>import('../pages/SongList')
   },
+  {
+    path: '/search',
+    name: 'Search',
+    component: ()=>import('../pages/Search')
+  },
 ]
 
 const router = createRouter({

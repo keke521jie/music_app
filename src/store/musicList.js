@@ -10,7 +10,10 @@ const state = {
         }
     }],
     playIndex: 0,
-    isPlay: false
+    isPlay: false,
+    // 播放歌曲的当前时间
+    currentTime: 0,
+    duration:0,
 }
 const mutations = {
     UPDATEISPLAY(state, p) {
@@ -21,8 +24,16 @@ const mutations = {
         state.musicList = newMusicList
     },
     // 修改播放歌曲的索引
-    UPDATEPLAYINDEX(state,newIndex){
+    UPDATEPLAYINDEX(state, newIndex) {
         state.playIndex = newIndex
+    },
+    // 修改歌曲当前时间currentTime
+    UPDATECURRENTTIME(state, newCurrentTime) {
+        state.currentTime = newCurrentTime
+    },
+    // 修改歌曲总时长
+    UPDATEDURATION(state,newDuration){
+        state.duration = newDuration
     }
 }
 const actions = {
@@ -31,11 +42,14 @@ const actions = {
 const getters = {
     musicList: (state) => state.musicList,
     playIndex: (state) => state.playIndex,
-    isPlay: (state) => state.isPlay
+    isPlay: (state) => state.isPlay,
+    currentTime: (state) => state.currentTime,
+    duration: (state) => state.duration,
+    songProgress: (state) => parseInt(state.currentTime / state.duration *100)
 }
 
 
-export default{
+export default {
     state,
     mutations,
     actions,

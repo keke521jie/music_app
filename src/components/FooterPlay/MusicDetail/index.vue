@@ -9,6 +9,7 @@
       </div>
       <div class="head-middle">
         <div class="name">
+        <!-- 跑马灯组件 -->
           <Vue3Marquee
             style="font-size: 0.36rem; color: #fff; font-weight: 700"
           >
@@ -30,7 +31,7 @@
         </svg>
       </div>
     </div>
-    <div class="musicImg" v-if="state.isShowLyric" @click="showMusicLyric">
+    <div class="musicImg" v-show="state.isShowLyric" @click="showMusicLyric">
       <img
         src="../../../assets/needle.png"
         alt=""
@@ -45,8 +46,23 @@
         :class="{ musicImg_active: isPlay, musicImg_pauesd: !isPlay }"
       />
     </div>
-    <div class="musicLyric" v-else @click="showMusicLyric">
-        <p v-for="item in musicLyric" :key="item">{{ item.lrc }}</p>
+
+    <div
+      class="musicLyric"
+      v-show="!state.isShowLyric"
+      ref="mLyric"
+      @click="showMusicLyric"
+    >
+      <p
+        v-for="item in musicLyric"
+        :key="item"
+        :class="{
+          active:
+            currentTime * 1000 >= item.time && currentTime * 1000 <= item.pre,
+        }"
+      >
+        {{ item.lrc }}
+      </p>
     </div>
     <div class="detailFooter">
       <div class="footerTop">
@@ -66,7 +82,9 @@
           <use xlink:href="#icon-geci"></use>
         </svg>
       </div>
-      <div class="footerMiddle"></div>
+      <div class="footerMiddle">
+        <input type="range" class="range" :min="0" :max="duration" v-model="currentTime" step=".5" @change="changeRange">
+      </div>
       <div class="footerBottom">
         <div class="platType">
           <svg class="icon" aria-hidden="true">
@@ -96,7 +114,7 @@
 </template>
 
 <script>
-import { computed, reactive } from "vue";
+import { computed,reactive } from "vue";
 import { Vue3Marquee } from "vue3-marquee";
 import "vue3-marquee/dist/style.css";
 import { useStore } from "vuex";
@@ -112,6 +130,9 @@ export default {
     });
     const store = useStore();
     const isPlay = computed(() => store.getters.isPlay);
+    const currentTime = computed(() => store.getters.currentTime);
+    const duration = computed(() => store.getters.duration);
+    const songProgress = computed(() => store.getters.songProgress);
     // 点击退出详情页的方法
     function quit() {
       props.changeShow(false);
@@ -135,9 +156,20 @@ export default {
       arr = store.getters.lrc.split(/[(\r\n)\r\n]+/).map((item) => {
         let min = item.slice(1, 3);
         let sec = item.slice(4, 6);
-        let mill = item.slice(7, 10);
-        let lrc = item.slice(11, item.length);
-        return { arr, min, sec, mill, lrc };
+        let mill = item.slice(7, 9);
+        let lrc =
+          item.slice(10, 11)[0] == "]"
+            ? item.slice(11, item.length)
+            : item.slice(10, item.length);
+        let time = min * 60 * 1000 + sec * 1000 + mill * 10;
+        return { arr, min, sec, mill, lrc, time };
+      });
+      arr.forEach((item, i) => {
+        if( i === arr.length - 1 || isNaN(arr[i+ 1].time)){
+          item.pre = 99999;
+        }else{
+          item.pre = arr[i+1].time;
+        }
       });
       return arr;
     });
@@ -145,6 +177,18 @@ export default {
     function showMusicLyric() {
       state.isShowLyric = !state.isShowLyric;
     }
+    // 歌曲滚动条拖动
+    function changeRange(e) {
+      console.log(e);
+    }
+    // 歌词滚动
+    // const mLyric = ref(null);
+    // watch(currentTime, () => {
+    //   let p = document.querySelector("p.active");
+    //   if(p.offsetTop > 300){
+    //     console.log(mLyric.value.scrollTop = p.offsetTop - 300);
+    //   }
+    // });
 
     return {
       quit,
@@ -154,6 +198,12 @@ export default {
       state,
       showMusicLyric,
       musicLyric,
+      currentTime,
+      // mLyric,
+      songProgress,
+      duration,
+      // timer,
+      changeRange
     };
   },
 };
@@ -272,14 +322,19 @@ export default {
     padding: 3rem 0.2rem;
     overflow: scroll;
     p {
+      width: 100%;
       text-align: center;
       font-size: 0.4rem;
       margin-bottom: 0.4rem;
       color: #fff;
     }
+    .active {
+      color: pink;
+      font-size: 0.5rem;
+    }
   }
   .detailFooter {
-    margin-top: .4rem;
+    margin-top: 0.4rem;
     padding: 0 0.2rem;
     display: flex;
     flex-direction: column;
@@ -291,8 +346,18 @@ export default {
         height: 0.7rem;
       }
     }
+    .footerMiddle {
+      width: 100%;
+      height: 0.8rem;
+      line-height: 0.8rem;
+      padding: 0 0.2rem;
+      text-align: center;
+      .range{
+        width: 100%;
+        height: .06rem;
+      }
+    }
     .footerBottom {
-      margin-top: 0.2rem;
       height: 1rem;
       display: flex;
       justify-content: space-around;
@@ -310,3 +375,10 @@ export default {
   }
 }
 </style>
+
+
+
+
+
+<!-- 待解决： -->
+<!-- offsetTop 一直为0 -->

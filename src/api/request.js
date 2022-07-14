@@ -1,6 +1,7 @@
 import axios from "axios"
 const requests = axios.create({
-    baseURL: "http://localhost:3000", //基础路径，发请求的时候，路径中会出现api
+    // baseURL: "http://localhost:3000", //基础路径，发请求的时候，路径中会出现api
+    baseURL: "http://152.136.253.106:3000/", //基础路径，发请求的时候，路径中会出现api
     timeout: 5000, //设置超时的时间为5s
     withCredentials: true
 });

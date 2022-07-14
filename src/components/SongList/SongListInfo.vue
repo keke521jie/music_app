@@ -132,7 +132,7 @@ export default {
       }
       .text {
         display: block;
-        height: 0.6rem;
+        height: 0.7rem;
         overflow: hidden;
         font-size: 0.24rem;
         color: #e3eeee;

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { computed, reactive, onMounted, onUpdated } from "vue";
+import { computed, reactive, onMounted, onUpdated, watch } from "vue";
 import { useStore } from "vuex";
 import MusicDetail from "./MusicDetail";
 export default {
@@ -52,16 +52,33 @@ export default {
       if (this.$refs.audio.paused) {
         this.$refs.audio.play();
         this.$store.commit("UPDATEISPLAY", true);
+        this.updatedCurrentTime();
+        this.$store.commit("UPDATEDURATION", this.$refs.audio.duration);
       } else {
         this.$refs.audio.pause();
         this.$store.commit("UPDATEISPLAY", false);
+        clearInterval(this.state.dingshiqi)
       }
     },
+    // 修改歌曲播放的当前时间
+    updatedCurrentTime() {
+      clearInterval(this.state.dingshiqi)
+      this.state.dingshiqi = setInterval(() => {
+        this.$store.commit("UPDATECURRENTTIME", this.$refs.audio.currentTime);
+      }, 1000);
+    },
+  },
+  mounted() {
+    this.$store.commit("UPDATEDURATION", this.$refs.audio.duration);
   },
   watch: {
     playIndex() {
       this.$refs.audio.autoplay = true;
       this.$store.commit("UPDATEISPLAY", true);
+      this.updatedCurrentTime();
+      setTimeout(()=>{   //这里开的定时器是为了获取最新的歌曲时长，不开定时器会获取到上一首的歌曲时长
+        this.$store.commit("UPDATEDURATION", this.$refs.audio.duration);
+      },500)
     },
     musicList() {
       if (this.$refs.audio.paused) {
@@ -71,9 +88,12 @@ export default {
     },
   },
   setup() {
+    
     const store = useStore();
     const state = reactive({
       show: false,
+      // 定义一个接受定时器的变量
+      dingshiqi: 0,
     });
     // 修改show用于显示弹出层
     function showDetails() {
@@ -86,6 +106,19 @@ export default {
     const isPlay = computed(() => store.getters.isPlay);
     const playIndex = computed(() => store.getters.playIndex);
     const musicList = computed(() => store.getters.musicList);
+    const currentTime = computed(() => store.getters.currentTime);
+    const duration = computed(() => store.getters.duration);
+    // 监听歌曲播放完自动播放下一首
+    watch(currentTime, (currentTime) => {
+      if (currentTime == duration.value) {
+        if (playIndex.value == musicList.value.length - 1) {
+          store.commit("UPDATEPLAYINDEX", 0);
+        } else {
+          let newIndex =  playIndex.value + 1
+          store.commit("UPDATEPLAYINDEX",newIndex);
+        }
+      }
+    });
     // 获取歌词数据
     function getLyric() {
       store.dispatch("getMusicLyric", musicList.value[playIndex.value].id);
@@ -103,6 +136,8 @@ export default {
       state,
       showDetails,
       changeShow,
+      currentTime,
+      duration,
     };
   },
 };

@@ -9,7 +9,7 @@
       <span>我的</span><span class="active">发现</span><span>云村</span><span>视频</span>
     </div>
     <div class="topRight">
-      <svg class="icon" aria-hidden="true">
+      <svg class="icon" aria-hidden="true" @click="router.push('/search')">
         <use xlink:href="#icon-fangdajing"></use>
       </svg>
     </div>
@@ -17,8 +17,15 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 export default {
   name: "TopNav",
+  setup(){
+    const router = useRouter()
+    return {
+      router
+    }
+  }
 };
 </script>
 
