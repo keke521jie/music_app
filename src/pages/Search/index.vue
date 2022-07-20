@@ -1,7 +1,7 @@
 <template>
   <div class="search">
     <div class="search-top">
-      <svg class="icon" aria-hidden="true" @click="router.push('/')">
+      <svg class="icon" aria-hidden="true" @click="router.go(-1)">
         <use xlink:href="#icon-zuojiantou"></use>
       </svg>
       <input

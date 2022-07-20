@@ -1,5 +1,7 @@
 import requests from '../request'
 
+// 获取用户cookie
+export const reqUserCookie = () => requests({ url: '/register/anonimous', method: 'get' })
 
 // 获取home轮播图数据
 export const reqGetBannerInfo = () => requests({ url: '/banner?type=2', method: 'get' })

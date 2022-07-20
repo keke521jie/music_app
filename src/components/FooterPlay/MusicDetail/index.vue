@@ -9,7 +9,7 @@
       </div>
       <div class="head-middle">
         <div class="name">
-        <!-- 跑马灯组件 -->
+          <!-- 跑马灯组件 -->
           <Vue3Marquee
             style="font-size: 0.36rem; color: #fff; font-weight: 700"
           >
@@ -75,7 +75,7 @@
         <svg class="icon" aria-hidden="true">
           <use xlink:href="#icon-changpian"></use>
         </svg>
-        <svg class="icon" aria-hidden="true">
+        <svg class="icon" aria-hidden="true" @click="goCommentary">
           <use xlink:href="#icon-pinglun"></use>
         </svg>
         <svg class="icon" aria-hidden="true">
@@ -83,7 +83,15 @@
         </svg>
       </div>
       <div class="footerMiddle">
-        <input type="range" class="range" :min="0" :max="duration" v-model="currentTime" step=".5" @change="changeRange">
+        <input
+          type="range"
+          class="range"
+          :min="0"
+          :max="duration"
+          v-model="currentTime"
+          step=".5"
+          @change="changeRange"
+        />
       </div>
       <div class="footerBottom">
         <div class="platType">
@@ -114,10 +122,11 @@
 </template>
 
 <script>
-import { computed,reactive } from "vue";
+import { computed, reactive } from "vue";
 import { Vue3Marquee } from "vue3-marquee";
 import "vue3-marquee/dist/style.css";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 export default {
   name: "MusicDetail",
   components: {
@@ -129,6 +138,7 @@ export default {
       isShowLyric: true,
     });
     const store = useStore();
+    const router = useRouter();
     const isPlay = computed(() => store.getters.isPlay);
     const currentTime = computed(() => store.getters.currentTime);
     const duration = computed(() => store.getters.duration);
@@ -136,6 +146,16 @@ export default {
     // 点击退出详情页的方法
     function quit() {
       props.changeShow(false);
+    }
+    // 处理点击评论按钮的方法
+    function goCommentary() {
+      quit();
+      router.push({
+        name: "Commentary",
+        params: {
+          id: props.musicList[props.playIndex].id,
+        },
+      });
     }
     // 控制音乐的播放
     function play() {
@@ -165,10 +185,10 @@ export default {
         return { arr, min, sec, mill, lrc, time };
       });
       arr.forEach((item, i) => {
-        if( i === arr.length - 1 || isNaN(arr[i+ 1].time)){
+        if (i === arr.length - 1 || isNaN(arr[i + 1].time)) {
           item.pre = 99999;
-        }else{
-          item.pre = arr[i+1].time;
+        } else {
+          item.pre = arr[i + 1].time;
         }
       });
       return arr;
@@ -203,7 +223,9 @@ export default {
       songProgress,
       duration,
       // timer,
-      changeRange
+      changeRange,
+      router,
+      goCommentary,
     };
   },
 };
@@ -352,9 +374,9 @@ export default {
       line-height: 0.8rem;
       padding: 0 0.2rem;
       text-align: center;
-      .range{
+      .range {
         width: 100%;
-        height: .06rem;
+        height: 0.06rem;
       }
     }
     .footerBottom {

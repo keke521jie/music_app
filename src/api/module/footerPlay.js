@@ -5,3 +5,6 @@ export const reqGetNewMusicList = () => requests({ url: '/personalized/newsong',
 
 // 获取歌词
 export const reqGetMusicLyric = (data) => requests({ url: `/lyric?id=${data}`, method: 'get' })
+
+// 获取歌曲评论
+export const reqSongCommentary = (data) => requests({ url: `/comment/music?id=${data.id}&limit=${data.limit}`, method: 'get' })

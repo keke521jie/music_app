@@ -10,17 +10,23 @@ const routes = [
   {
     path: '/songlist',
     name: 'SongList',
-    component: ()=>import('../pages/SongList')
+    component: () => import('../pages/SongList')
   },
   {
     path: '/search',
     name: 'Search',
-    component: ()=>import('../pages/Search')
+    component: () => import('../pages/Search')
+  },
+  {
+    path: '/commentary/:id',
+    name: 'Commentary',
+    component: () => import('../pages/Commentary'),
+    props: true,
   },
 ]
 
 const router = createRouter({
-  history:createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(process.env.BASE_URL),
   routes
 })
 

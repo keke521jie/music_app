@@ -3,13 +3,13 @@
     <img :src="playList.coverImgUrl" alt="" class="header-bg" />
     <div class="header">
       <div class="header-left">
-        <svg class="icon" aria-hidden="true" @click="$router.go(-1)">
+        <svg class="icon" aria-hidden="true" @click="router.go(-1)">
           <use xlink:href="#icon-zuojiantou"></use>
         </svg>
         <span>歌单</span>
       </div>
       <div class="header-right">
-        <svg class="icon" aria-hidden="true">
+        <svg class="icon" aria-hidden="true" @click="router.push('/search')">
           <use xlink:href="#icon-fangdajing"></use>
         </svg>
         <svg class="icon" aria-hidden="true">
@@ -37,15 +37,17 @@
 </template>
 
 <script>
+import { useRouter } from 'vue-router';
 export default {
   name: "SongListInfo",
   props: ["playList"],
   setup(props) {
+    const router = useRouter()
     if(props.playList.creator = ""){
       props.playList = JSON.parse(sessionStorage.getItem().playList) 
     }
     return {
-     
+     router
     };
   },
 };

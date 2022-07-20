@@ -14,6 +14,8 @@ const state = {
     // 播放歌曲的当前时间
     currentTime: 0,
     duration:0,
+    //评论
+    commentary:{},
 }
 const mutations = {
     UPDATEISPLAY(state, p) {
@@ -34,6 +36,10 @@ const mutations = {
     // 修改歌曲总时长
     UPDATEDURATION(state,newDuration){
         state.duration = newDuration
+    },
+    //修改歌曲评论列表
+    UPDAYECOMMENTARYLIST(state,newCommentaryList){
+        state.commentary = newCommentaryList
     }
 }
 const actions = {
@@ -45,7 +51,10 @@ const getters = {
     isPlay: (state) => state.isPlay,
     currentTime: (state) => state.currentTime,
     duration: (state) => state.duration,
-    songProgress: (state) => parseInt(state.currentTime / state.duration *100)
+    songProgress: (state) => parseInt(state.currentTime / state.duration *100),
+    comments:(state) => state.commentary.comments,
+    hotComments:(state) => state.commentary.hotComments,
+    total:(state) => state.commentary.total
 }
 
 
